@@ -25,7 +25,7 @@
 #include "glsl_source_processor.h"
 
 int main() {
-    SplitDirectoryFileProvider sourceProvider("shaders");
+    FileSourceProvider sourceProvider(SillyFileProvider{}, SplitDirectories("shaders"));
 
     GLSLSourceProcessor processor(sourceProvider, "#version 450 core");
 
