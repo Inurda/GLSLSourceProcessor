@@ -156,7 +156,8 @@ concept SourceProvider = requires(T t)
 template<FileProviderImpl IMPL = SillyFileProvider, PathPolicy PATH_POLICY = SplitDirectories>
 class FileSourceProvider {
 public:
-    explicit FileSourceProvider(IMPL impl = IMPL{}, PATH_POLICY policy = PATH_POLICY{}, LoggingImpl log = DISABLED_LOGGING) :
+    explicit FileSourceProvider(IMPL impl = IMPL{}, PATH_POLICY policy = PATH_POLICY{}, LoggingImpl log =
+        STDIOLogging::logAsError) :
         impl_(std::move(impl)),
         policy_(std::move(policy)),
         log_(log) {}
@@ -186,7 +187,7 @@ template<SourceProvider SOURCE_PROVIDER>
 class GLSLSourceProcessor {
 public:
     explicit GLSLSourceProcessor(SOURCE_PROVIDER sourceProvider = SOURCE_PROVIDER{},
-        std::string glslVersion = "#version 450 core", LoggingImpl log = DISABLED_LOGGING) :
+        std::string glslVersion = "#version 450 core", LoggingImpl log = STDIOLogging::logAsError) :
         sourceProvider_(std::move(sourceProvider)),
         glslVersion_(std::move(glslVersion)),
         log_(log) {}

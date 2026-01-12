@@ -50,17 +50,21 @@ inline std::optional<std::string> CachedFileProvider::getString(const std::files
 }
 
 inline std::optional<std::string> SmartCachedFileProvider::getString(const std::filesystem::path& filepath) const {
-    CacheKey key(filepath);
-    if (const auto it = cache_.find(key); it != cache_.end()) {
-        return it->second;
-    }
+    try {
+        CacheKey key(filepath);
+        if (const auto it = cache_.find(key); it != cache_.end()) {
+            return it->second;
+        }
 
-    std::optional<std::string> source = readString(filepath);
-    if (!source.has_value()) {
+        std::optional<std::string> source = readString(filepath);
+        if (!source.has_value()) {
+            return std::nullopt;
+        }
+
+        return cache_.emplace(key, std::move(*source)).first->second;
+    } catch (std::filesystem::filesystem_error&) {
         return std::nullopt;
     }
-
-    return cache_.emplace(key, std::move(*source)).first->second;
 }
 
 template<SourceProvider SOURCE_PROVIDER>
