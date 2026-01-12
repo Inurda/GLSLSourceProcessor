@@ -21,8 +21,9 @@
 // SOFTWARE.
 
 #include <iostream>
+#include <optional>
 
-#include "glsl_source_processor.h"
+#include <glsl/glsl_source_processor.h>
 
 int main() {
     FileSourceProvider sourceProvider(SillyFileProvider{}, SplitDirectories("shaders"));
@@ -39,6 +40,6 @@ int main() {
     std::optional<std::string> source = processor.getShaderSource("example.glsl");
 
     if (source.has_value()) {
-        std::cout << source.value() << std::endl;
+        std::cout << "After:\n" << source.value() << std::endl;
     }
 }

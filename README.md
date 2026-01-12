@@ -10,8 +10,8 @@ overhead
 
 Requires C++20 or higher
 
-Just copy the files [glsl_preprocessor.h](glsl_source_processor.h) and [glsl_preprocessor.inl](glsl_source_processor.inl)
-into your codebase, and you are ready to go. _glsl_preprocessor.inl_ contains the implementation detail. 
+###### Simple
+You can simply copy the files from in the [include](include) directory into your codebase, since it is header only
 
 ###### CMake
 
@@ -21,6 +21,39 @@ You can clone this repository and add as a target in CMake, like this:
 add_subdirectory(path/to/this/repository)
 
 target_link_libraries(your_target PRIVATE glsl_sp)
+```
+
+Then you can include the file, like this:
+
+```c++
+#include <glsl/glsl_source_processor.h>
+```
+
+Minimal example:
+```c++
+#include <iostream>
+#include <optional>
+
+#include <glsl/glsl_source_processor.h>
+
+int main() {
+    FileSourceProvider sourceProvider(SillyFileProvider{}, SplitDirectories("shaders"));
+
+    GLSLSourceProcessor processor(sourceProvider, "#version 450 core");
+
+    processor.define("ALPHA_CUTOUT_THRESHOLD", 0.3f);
+    processor.define("TEST_FLAG1");
+    processor.define("TEST_FLAG2");
+    processor.define("TEST_FLAG3");
+
+    processor.undef("TEST_FLAG3");
+
+    std::optional<std::string> source = processor.getShaderSource("example.glsl");
+
+    if (source.has_value()) {
+        std::cout << "After:\n" << source.value() << std::endl;
+    }
+}
 ```
 
 ###### Usage
